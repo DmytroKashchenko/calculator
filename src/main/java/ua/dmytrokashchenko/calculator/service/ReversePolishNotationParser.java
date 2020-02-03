@@ -1,9 +1,11 @@
 package ua.dmytrokashchenko.calculator.service;
 
+import ua.dmytrokashchenko.calculator.domain.Element;
+
 import java.util.List;
 
 public interface ReversePolishNotationParser {
 
-    List<String> parse(String expression);
+    List<Element> parse(String expression);
 
 }
