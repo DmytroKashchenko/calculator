@@ -40,6 +40,8 @@ public class Element {
         } else if (OPERATION_FOURTH_PRIORITY.matcher(value).find()) {
             priority = 4;
             isOperand = true;
+        } else {
+            throw new IllegalArgumentException();
         }
 
     }
@@ -54,6 +56,13 @@ public class Element {
 
     public boolean isOperand() {
         return isOperand;
+    }
+
+    public void negate() {
+        if (this.isOperand) {
+            throw new UnsupportedOperationException();
+        }
+        this.value = "-" + this.value;
     }
 
     @Override

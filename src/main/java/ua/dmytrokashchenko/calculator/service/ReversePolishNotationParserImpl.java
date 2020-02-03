@@ -16,14 +16,27 @@ public class ReversePolishNotationParserImpl implements ReversePolishNotationPar
         return getNotationFromElements(elements);
     }
 
-
     private List<Element> splitByElement(String expression) {
         List<Element> result = new LinkedList<>();
         Matcher matcher = ELEMENT.matcher(expression);
         while (matcher.find()) {
             result.add(new Element(matcher.group()));
         }
+        handleNegativeValues(result);
         return result;
+    }
+
+    private void handleNegativeValues(List<Element> result) {
+        List<Integer> indexesForRemove = new LinkedList<>();
+        for (int i = 1; i < result.size(); i++) {
+            if (result.get(i).isOperand() && result.get(i - 1).getValue().matches("[+\\-*/]")) {
+                result.get(i + 1).negate();
+                indexesForRemove.add(i);
+            }
+        }
+        for (int i : indexesForRemove) {
+            result.remove(i);
+        }
     }
 
     private void checkExpression(String expression) {
