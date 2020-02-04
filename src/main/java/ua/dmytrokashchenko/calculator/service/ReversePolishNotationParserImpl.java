@@ -27,16 +27,17 @@ public class ReversePolishNotationParserImpl implements ReversePolishNotationPar
     }
 
     private void handleNegativeValues(List<Element> result) {
-        List<Integer> indexesForRemove = new LinkedList<>();
+        if (result.get(0).getValue().equals("-")) {
+            result.add(0, new Element("0"));
+        }
         for (int i = 1; i < result.size(); i++) {
-            if (result.get(i).isOperand() && result.get(i - 1).getValue().matches("[+\\-*/]")) {
+            if (result.get(i).getValue().matches("[+\\-*/]")
+                    && result.get(i - 1).getValue().matches("[+\\-*/]")) {
                 result.get(i + 1).negate();
-                indexesForRemove.add(i);
+                result.set(i, null);
             }
         }
-        for (int i : indexesForRemove) {
-            result.remove(i);
-        }
+        result.removeAll(Collections.singleton(null));
     }
 
     private void checkExpression(String expression) {
@@ -69,7 +70,9 @@ public class ReversePolishNotationParserImpl implements ReversePolishNotationPar
                     while (!stack.empty() && !stack.peek().getValue().equals("(")) {
                         result.add(stack.pop());
                     }
-                    stack.pop();
+                    if (!stack.empty() && stack.peek().getValue().equals("(")) {
+                        stack.pop();
+                    }
                     continue;
                 }
                 while (!stack.empty() && element.getPriority() <= stack.peek().getPriority()) {
@@ -82,9 +85,6 @@ public class ReversePolishNotationParserImpl implements ReversePolishNotationPar
             result.add(stack.pop());
         }
         result.removeAll(Arrays.asList(new Element("("), new Element(")")));
-
         return result;
     }
-
-
 }
